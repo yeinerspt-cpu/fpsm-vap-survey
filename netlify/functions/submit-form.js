@@ -1,29 +1,55 @@
 const { createClient } = require('@supabase/supabase-js');
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
 exports.handler = async (event) => {
+  console.log('=== SUBMIT-FORM FUNCTION ===');
+  console.log('Environment variables:', {
+    SUPABASE_URL: process.env.SUPABASE_URL ? 'OK' : 'MISSING',
+    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY ? 'OK' : 'MISSING'
+  });
+
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
-      body: JSON.stringify({ message: 'Método no permitido' })
+      body: JSON.stringify({ success: false, message: 'Método no permitido' })
     };
   }
 
   try {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      console.error('Missing environment variables');
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ 
+          success: false, 
+          message: 'Error de configuración del servidor'
+        })
+      };
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
     const data = JSON.parse(event.body);
-    
+
+    console.log('Inserting data:', { surveyId: data.surveyId });
+
     const { error } = await supabase
       .from('fpsm_vap_responses')
       .insert([data]);
 
     if (error) {
-      console.error('Error Supabase:', error);
-      throw error;
+      console.error('Supabase error:', error);
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ 
+          success: false, 
+          message: 'Error al guardar: ' + error.message
+        })
+      };
     }
 
+    console.log('Data inserted successfully');
     return {
       statusCode: 200,
       headers: {
@@ -32,7 +58,7 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         success: true,
-        message: 'Respuesta guardada exitosamente'
+        message: 'Su respuesta ha sido guardada exitosamente'
       })
     };
   } catch (error) {
@@ -41,8 +67,7 @@ exports.handler = async (event) => {
       statusCode: 500,
       body: JSON.stringify({
         success: false,
-        message: 'Error al guardar la respuesta',
-        error: error.message
+        message: 'Error al guardar la respuesta: ' + error.message
       })
     };
   }
