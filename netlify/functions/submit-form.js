@@ -2,10 +2,6 @@ const { createClient } = require('@supabase/supabase-js');
 
 exports.handler = async (event) => {
   console.log('=== SUBMIT-FORM FUNCTION ===');
-  console.log('Environment variables:', {
-    SUPABASE_URL: process.env.SUPABASE_URL ? 'OK' : 'MISSING',
-    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY ? 'OK' : 'MISSING'
-  });
 
   if (event.httpMethod !== 'POST') {
     return {
@@ -32,11 +28,20 @@ exports.handler = async (event) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const data = JSON.parse(event.body);
 
-    console.log('Inserting data:', { surveyId: data.surveyId });
+    // Transformar datos: camelCase a snake_case
+    const dbData = {
+      survey_id: data.surveyId,
+      survey_date: data.surveyDate,
+      survey_time: data.surveyTime,
+      timestamp: data.timestamp,
+      responses: data.responses
+    };
+
+    console.log('Inserting data:', { survey_id: dbData.survey_id });
 
     const { error } = await supabase
       .from('fpsm_vap_responses')
-      .insert([data]);
+      .insert([dbData]);
 
     if (error) {
       console.error('Supabase error:', error);
