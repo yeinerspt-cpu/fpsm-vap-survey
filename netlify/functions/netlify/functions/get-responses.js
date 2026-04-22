@@ -1,35 +1,49 @@
 const { createClient } = require('@supabase/supabase-js');
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
 exports.handler = async (event) => {
+  console.log('=== GET-RESPONSES FUNCTION ===');
+
   if (event.httpMethod !== 'GET') {
     return {
       statusCode: 405,
-      body: JSON.stringify({ message: 'Método no permitido' })
+      body: JSON.stringify({ success: false, message: 'Método no permitido' })
     };
   }
 
   try {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      console.error('Missing environment variables');
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ 
+          success: false, 
+          message: 'Error de configuración'
+        })
+      };
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
     const { data, error } = await supabase
       .from('fpsm_vap_responses')
       .select('*')
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error Supabase:', error);
-      throw error;
+      console.error('Supabase error:', error);
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ 
+          success: false, 
+          message: 'Error al obtener datos: ' + error.message
+        })
+      };
     }
 
-    const transformedData = data.map(item => ({
-      surveyId: item.survey_id,
-      surveyDate: item.survey_date,
-      surveyTime: item.survey_time,
-      timestamp: item.timestamp || item.created_at,
-      responses: item.responses
-    }));
+    console.log('Data retrieved:', data.length, 'rows');
 
     return {
       statusCode: 200,
@@ -39,8 +53,8 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         success: true,
-        count: transformedData.length,
-        data: transformedData
+        count: data.length,
+        data: data
       })
     };
   } catch (error) {
@@ -49,8 +63,7 @@ exports.handler = async (event) => {
       statusCode: 500,
       body: JSON.stringify({
         success: false,
-        message: 'Error al obtener datos',
-        error: error.message
+        message: 'Error al obtener datos: ' + error.message
       })
     };
   }
