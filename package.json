@@ -1,0 +1,27 @@
+{
+  "name": "fpsm-vap-survey",
+  "version": "2.0.0",
+  "description": "Encuesta FPSM-VAP 2.0 - Factores Psicosociales y Microbiológicos Asociados al Uso de Vapeadores",
+  "main": "index.html",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "npm install",
+    "start": "netlify dev"
+  },
+  "keywords": [
+    "survey",
+    "research",
+    "vaping",
+    "psychology",
+    "microbiology",
+    "Universidad de Córdoba"
+  ],
+  "author": "GIMBI-C",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  }
+}

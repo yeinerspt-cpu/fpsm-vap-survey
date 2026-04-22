@@ -1,0 +1,36 @@
+[build]
+command = "npm install"
+functions = "netlify/functions"
+publish = "."
+
+[dev]
+framework = "static"
+port = 3000
+
+[[redirects]]
+from = "/api/*"
+to = "/.netlify/functions/:splat"
+status = 200
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+
+[context.production.environment]
+# Variables de entorno para producción
+SUPABASE_URL = "tu_url_supabase"
+SUPABASE_ANON_KEY = "tu_clave_anon_supabase"
+
+[context.deploy-preview.environment]
+# Variables de entorno para preview
+SUPABASE_URL = "tu_url_supabase"
+SUPABASE_ANON_KEY = "tu_clave_anon_supabase"
+
+[[headers]]
+for = "/*"
+[headers.values]
+X-Content-Type-Options = "nosniff"
+X-Frame-Options = "SAMEORIGIN"
+X-XSS-Protection = "1; mode=block"
+Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; img-src 'self' data:; connect-src 'self' *.supabase.co"

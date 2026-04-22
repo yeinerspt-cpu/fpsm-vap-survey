@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - FPSM-VAP 2.0</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a472a;
+            --secondary: #c41e3a;
+            --accent: #f39c12;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --border: #dee2e6;
+            --success: #28a745;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #2d5f3f 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 4px solid var(--secondary);
+        }
+
+        .header h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3em;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+        }
+
+        input[type="password"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 71, 42, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Lato', sans-serif;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, var(--primary) 0%, #2d5f3f 100%);
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(26, 71, 42, 0.3);
+        }
+
+        .btn-download {
+            background: var(--success);
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .btn-download:hover:not(:disabled) {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-back {
+            background: var(--gray);
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: #5a6268;
+        }
+
+        .btn-logout {
+            background: var(--secondary);
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .btn-logout:hover {
+            background: #a01628;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .error {
+            background: linear-gradient(135deg, rgba(196, 30, 58, 0.1) 0%, rgba(196, 30, 58, 0.05) 100%);
+            border-left: 4px solid var(--secondary);
+            color: #721c24;
+            display: none;
+        }
+
+        .success {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(40, 167, 69, 0.05) 100%);
+            border-left: 4px solid var(--success);
+            color: #155724;
+            display: none;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(26, 71, 42, 0.05) 0%, rgba(196, 30, 58, 0.05) 100%);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 3px solid var(--primary);
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        .login-section {
+            display: block;
+        }
+
+        .admin-section {
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: var(--primary);
+            font-weight: 600;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(26, 71, 42, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 0.8s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .filter-options {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            margin-bottom: 12px;
+        }
+
+        .filter-group label {
+            display: inline-block;
+            margin-right: 15px;
+            margin-bottom: 0;
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .footer {
+            background: var(--light);
+            padding: 20px;
+            text-align: center;
+            font-size: 0.85em;
+            color: var(--gray);
+            border-top: 1px solid var(--border);
+        }
+
+        .password-reset-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .password-reset-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .password-reset-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+            }
+
+            .content {
+                padding: 25px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Panel de Administración</h1>
+            <p>FPSM-VAP 2.0</p>
+        </div>
+
+        <div class="content">
+            <!-- SECCIÓN DE LOGIN -->
+            <div class="login-section" id="loginSection">
+                <div class="info-box">
+                    ℹ️ <strong>Acceso restringido:</strong> Solo administradores pueden descargar los datos de la encuesta. Ingrese la contraseña asignada.
+                </div>
+
+                <div class="message error" id="loginError"></div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="adminPassword">Contraseña de Administrador</label>
+                        <input type="password" id="adminPassword" required placeholder="Ingrese contraseña">
+                    </div>
+                    <button type="submit" class="btn-login">ACCEDER</button>
+                </form>
+
+                <div class="password-reset-link">
+                    ¿Olvidó la contraseña? <a href="#" onclick="showPasswordReset()">Restablecer contraseña</a>
+                </div>
+            </div>
+
+            <!-- SECCIÓN DE ADMINISTRACIÓN -->
+            <div class="admin-section" id="adminSection">
+                <div class="form-group" style="text-align: right; margin-bottom: 20px;">
+                    <button type="button" class="btn-logout" onclick="handleLogout()">CERRAR SESIÓN</button>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">📊 Estadísticas de Datos</div>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-number" id="totalResponses">0</div>
+                            <div class="stat-label">Respuestas Totales</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number" id="lastResponse">-</div>
+                            <div class="stat-label">Última Respuesta</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">📥 Descargar Datos</div>
+                    <div class="info-box">
+                        Seleccione el formato y las opciones de filtro para descargar los datos de las encuestas.
+                    </div>
+
+                    <div class="filter-options">
+                        <div class="filter-group">
+                            <label>Formato de descarga:</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-option">
+                                    <input type="radio" name="format" value="csv" checked>
+                                    <span>CSV (Excel/Sheets)</span>
+                                </label>
+                                <label class="checkbox-option">
+                                    <input type="radio" name="format" value="xlsx">
+                                    <span>Excel (.xlsx)</span>
+                                </label>
+                                <label class="checkbox-option">
+                                    <input type="radio" name="format" value="json">
+                                    <span>JSON</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>
+                                <input type="checkbox" id="includeTimestamp" checked>
+                                Incluir marcas de tiempo
+                            </label>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>
+                                <input type="checkbox" id="includeMetadata" checked>
+                                Incluir metadatos (ID, fecha, hora)
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-download" onclick="downloadData()">
+                        📥 DESCARGAR DATOS
+                    </button>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">🔧 Opciones</div>
+                    <button type="button" class="btn-back" onclick="refreshStats()">
+                        🔄 Actualizar Estadísticas
+                    </button>
+                    <button type="button" class="btn-back" style="margin-top: 10px;" onclick="goBack()">
+                        ← Volver al Formulario
+                    </button>
+                </div>
+
+                <div class="loading" id="downloadLoading">
+                    <span class="spinner"></span>
+                    Generando archivo...
+                </div>
+                <div class="message success" id="downloadSuccess">
+                    ✓ Archivo descargado exitosamente
+                </div>
+            </div>
+
+            <div class="message error" id="generalError"></div>
+        </div>
+
+        <div class="footer">
+            <p>Minciencias - Convocatoria 933-2023 | Código 100890</p>
+            <p>Grupo GIMBI-C | Universidad de Córdoba</p>
+        </div>
+    </div>
+
+    <script>
+        // Contraseña por defecto - CAMBIAR EN PRODUCCIÓN
+        const DEFAULT_PASSWORD = 'admin2025';
+
+        // Variables globales
+        let allData = [];
+        let isAuthenticated = false;
+
+        // Manejador de login
+        function handleLogin(event) {
+            event.preventDefault();
+            const password = document.getElementById('adminPassword').value;
+
+            if (password === DEFAULT_PASSWORD) {
+                isAuthenticated = true;
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('adminSection').style.display = 'block';
+                loadData();
+            } else {
+                showError('loginError', 'Contraseña incorrecta. Intente nuevamente.');
+            }
+        }
+
+        // Cargar datos desde Supabase o localStorage
+        async function loadData() {
+            document.getElementById('downloadLoading').style.display = 'block';
+            
+            try {
+                // Intentar cargar desde el servidor
+                const response = await fetch('/.netlify/functions/get-responses');
+                const result = await response.json();
+
+                if (response.ok && result.data) {
+                    allData = result.data;
+                } else {
+                    // Cargar desde localStorage si está disponible
+                    const stored = localStorage.getItem('fpsm_vap_responses');
+                    allData = stored ? JSON.parse(stored) : [];
+                }
+
+                updateStats();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                // Usar localStorage como fallback
+                const stored = localStorage.getItem('fpsm_vap_responses');
+                allData = stored ? JSON.parse(stored) : [];
+                updateStats();
+            } finally {
+                document.getElementById('downloadLoading').style.display = 'none';
+            }
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            const totalResponses = allData.length;
+            document.getElementById('totalResponses').textContent = totalResponses;
+
+            if (totalResponses > 0) {
+                const lastDate = new Date(allData[totalResponses - 1].timestamp);
+                const daysDiff = Math.floor((new Date() - lastDate) / (1000 * 60 * 60 * 24));
+                let timeText;
+                if (daysDiff === 0) timeText = 'Hoy';
+                else if (daysDiff === 1) timeText = 'Ayer';
+                else timeText = `${daysDiff} días`;
+                document.getElementById('lastResponse').textContent = timeText;
+            }
+        }
+
+        // Descargar datos
+        function downloadData() {
+            if (allData.length === 0) {
+                showError('generalError', 'No hay datos para descargar.');
+                return;
+            }
+
+            document.getElementById('downloadLoading').style.display = 'block';
+
+            try {
+                const format = document.querySelector('input[name="format"]:checked').value;
+                const includeTimestamp = document.getElementById('includeTimestamp').checked;
+                const includeMetadata = document.getElementById('includeMetadata').checked;
+
+                // Preparar datos
+                let exportData = allData.map(item => {
+                    let row = {};
+                    if (includeMetadata) {
+                        row['Survey_ID'] = item.surveyId;
+                        row['Survey_Date'] = item.surveyDate;
+                        row['Survey_Time'] = item.surveyTime;
+                    }
+                    if (includeTimestamp) {
+                        row['Timestamp'] = item.timestamp;
+                    }
+                    // Agregar respuestas
+                    Object.assign(row, item.responses);
+                    return row;
+                });
+
+                let filename = `FPSM-VAP_respuestas_${new Date().toISOString().split('T')[0]}`;
+
+                if (format === 'csv') {
+                    downloadCSV(exportData, filename);
+                } else if (format === 'xlsx') {
+                    downloadExcel(exportData, filename);
+                } else if (format === 'json') {
+                    downloadJSON(exportData, filename);
+                }
+
+                showSuccess('downloadSuccess');
+                setTimeout(() => {
+                    document.getElementById('downloadSuccess').style.display = 'none';
+                }, 3000);
+            } catch (error) {
+                showError('generalError', 'Error al descargar: ' + error.message);
+            } finally {
+                document.getElementById('downloadLoading').style.display = 'none';
+            }
+        }
+
+        // Descargar como CSV
+        function downloadCSV(data, filename) {
+            if (data.length === 0) return;
+
+            const headers = Object.keys(data[0]);
+            const csv = [
+                headers.join(','),
+                ...data.map(row =>
+                    headers.map(header => {
+                        const value = row[header] || '';
+                        // Escapar comillas y envolver en comillas si contiene comas
+                        return typeof value === 'string' && (value.includes(',') || value.includes('"'))
+                            ? `"${value.replace(/"/g, '""')}"` : value;
+                    }).join(',')
+                )
+            ].join('\n');
+
+            downloadFile(csv, filename + '.csv', 'text/csv;charset=utf-8;');
+        }
+
+        // Descargar como Excel
+        function downloadExcel(data, filename) {
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Respuestas');
+
+            // Ajustar ancho de columnas
+            ws['!cols'] = Object.keys(data[0]).map(() => ({ wch: 15 }));
+
+            XLSX.writeFile(wb, filename + '.xlsx');
+        }
+
+        // Descargar como JSON
+        function downloadJSON(data, filename) {
+            const json = JSON.stringify(data, null, 2);
+            downloadFile(json, filename + '.json', 'application/json;charset=utf-8;');
+        }
+
+        // Función auxiliar para descargar archivos
+        function downloadFile(content, filename, mimeType) {
+            const link = document.createElement('a');
+            const blob = new Blob([content], { type: mimeType });
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+
+        // Cerrar sesión
+        function handleLogout() {
+            isAuthenticated = false;
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('adminSection').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        // Volver al formulario
+        function goBack() {
+            window.location.href = '/';
+        }
+
+        // Refrescar estadísticas
+        function refreshStats() {
+            loadData();
+        }
+
+        // Mostrar/ocultar mensajes
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        function showSuccess(elementId) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+        }
+
+        // Placeholder para restablecer contraseña
+        function showPasswordReset() {
+            alert('Por favor contacte al administrador del sistema para restablecer la contraseña.');
+        }
+
+        // Cargar datos al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            // No cargar datos hasta que se inicie sesión
+        });
+    </script>
+</body>
+</html>

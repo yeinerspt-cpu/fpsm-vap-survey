@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FPSM-VAP 2.0 - Encuesta de Investigación</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a472a;
+            --secondary: #c41e3a;
+            --accent: #f39c12;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --border: #dee2e6;
+            --success: #28a745;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #2d5f3f 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            border-bottom: 4px solid var(--secondary);
+        }
+
+        .header h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.8em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .header .institution {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+
+        .form-content {
+            padding: 40px 30px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(26, 71, 42, 0.05) 0%, rgba(196, 30, 58, 0.05) 100%);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 6px;
+            font-size: 0.95em;
+        }
+
+        .info-box strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8em;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .question-group {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #fafbfc;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .question-label {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: block;
+            font-size: 1em;
+        }
+
+        .question-hint {
+            font-size: 0.85em;
+            color: var(--gray);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: 'Lato', sans-serif;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 71, 42, 0.1);
+            background: white;
+        }
+
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radio-group.horizontal,
+        .checkbox-group.horizontal {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .radio-option,
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .radio-option:hover,
+        .checkbox-option:hover {
+            background: rgba(26, 71, 42, 0.05);
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .likert-scale {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            margin-top: 15px;
+        }
+
+        .likert-label {
+            text-align: center;
+            font-size: 0.8em;
+            color: var(--gray);
+            font-weight: 500;
+            padding: 8px 2px;
+        }
+
+        .likert-item {
+            text-align: center;
+        }
+
+        .likert-item input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+        }
+
+        .consent-box {
+            background: linear-gradient(135deg, rgba(196, 30, 58, 0.05) 0%, rgba(243, 156, 18, 0.05) 100%);
+            border: 2px solid var(--secondary);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .consent-box h3 {
+            color: var(--primary);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .consent-box p {
+            margin-bottom: 12px;
+            line-height: 1.7;
+            font-size: 0.95em;
+        }
+
+        .consent-box .consent-check {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid var(--success);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Lato', sans-serif;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary) 0%, #2d5f3f 100%);
+            color: white;
+            padding: 14px 40px;
+            font-size: 1.05em;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(26, 71, 42, 0.3);
+        }
+
+        .btn-reset {
+            background: var(--gray);
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #5a6268;
+        }
+
+        .btn-admin {
+            background: var(--secondary);
+            color: white;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 0.9em;
+        }
+
+        .btn-admin:hover {
+            background: #a01628;
+        }
+
+        .success-message {
+            display: none;
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(40, 167, 69, 0.05) 100%);
+            border-left: 4px solid var(--success);
+            color: #155724;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .error-message {
+            display: none;
+            background: linear-gradient(135deg, rgba(196, 30, 58, 0.1) 0%, rgba(196, 30, 58, 0.05) 100%);
+            border-left: 4px solid var(--secondary);
+            color: #721c24;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .timestamp {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #fafbfc;
+            border-radius: 8px;
+        }
+
+        .timestamp-item {
+            flex: 1;
+        }
+
+        .timestamp-item label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: var(--primary);
+            font-weight: 600;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(26, 71, 42, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 0.8s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .form-content {
+                padding: 20px 15px;
+            }
+
+            .likert-scale {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 2px;
+            }
+
+            .likert-label {
+                font-size: 0.7em;
+            }
+        }
+
+        .footer {
+            background: var(--light);
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 0.9em;
+            color: var(--gray);
+            border-top: 1px solid var(--border);
+        }
+
+        .required::after {
+            content: " *";
+            color: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>FPSM-VAP 2.0</h1>
+            <p>Factores Psicosociales y Microbiológicos Asociados al Uso de Vapeadores</p>
+            <div class="institution">
+                Grupo de Investigaciones Microbiológicas y Biomédicas de Córdoba (GIMBI-C) | Universidad de Córdoba<br>
+                Minciencias - Convocatoria 933-2023 | Código 100890
+            </div>
+        </div>
+
+        <div class="form-content">
+            <div class="success-message" id="successMessage">
+                ✓ Su respuesta ha sido guardada exitosamente. ¡Gracias por participar en esta investigación!
+            </div>
+            <div class="error-message" id="errorMessage"></div>
+
+            <form id="mainForm">
+                <!-- CONSENTIMIENTO INFORMADO -->
+                <div class="consent-box">
+                    <h3>Consentimiento Informado</h3>
+                    <p><strong>Título del estudio:</strong> Factores Psicosociales y Microbiológicos Asociados al Uso de Vapeadores</p>
+                    <p><strong>Investigadores:</strong> Grupo de Investigaciones Microbiológicas y Biomédicas de Córdoba (GIMBI-C) - Universidad de Córdoba</p>
+                    <p>Su participación en este estudio es <strong>voluntaria, anónima y confidencial</strong>. Los datos se usarán exclusivamente con fines académicos. Puede retirarse en cualquier momento sin consecuencias.</p>
+                    <div class="consent-check">
+                        <label>
+                            <input type="checkbox" id="consentCheck" required>
+                            <span class="required">He leído y comprendo la información anterior. Acepto participar voluntariamente en este estudio.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- ID Y TIMESTAMP -->
+                <div class="timestamp">
+                    <div class="timestamp-item form-group">
+                        <label for="surveyId" class="question-label">ID Encuesta</label>
+                        <input type="text" id="surveyId" value="" placeholder="Se genera automáticamente">
+                    </div>
+                    <div class="timestamp-item form-group">
+                        <label for="surveyDate" class="question-label required">Fecha</label>
+                        <input type="date" id="surveyDate" required>
+                    </div>
+                    <div class="timestamp-item form-group">
+                        <label for="surveyTime" class="question-label required">Hora Inicio</label>
+                        <input type="time" id="surveyTime" required>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 1: DATOS SOCIODEMOGRÁFICOS -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-number">①</span>
+                        Datos Sociodemográficos
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label for="age" class="question-label required">1. Edad (años)</label>
+                        <input type="number" id="age" min="13" max="120" required>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label required">2. Sexo biológico</label>
+                        <div class="radio-group horizontal">
+                            <label class="radio-option">
+                                <input type="radio" name="biologicalSex" value="Masculino" required>
+                                <span>Masculino</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="biologicalSex" value="Femenino" required>
+                                <span>Femenino</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="biologicalSex" value="Prefiero no decir" required>
+                                <span>Prefiero no decir</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label required">3. Identidad de género</label>
+                        <div class="radio-group horizontal">
+                            <label class="radio-option">
+                                <input type="radio" name="genderIdentity" value="Hombre" required>
+                                <span>Hombre</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="genderIdentity" value="Mujer" required>
+                                <span>Mujer</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="genderIdentity" value="No binario" required>
+                                <span>No binario</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="genderIdentity" value="Otro" required>
+                                <span>Otro</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="genderIdentity" value="Prefiero no decir" required>
+                                <span>Prefiero no decir</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label required">4. Nivel educativo actual</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-option">
+                                <input type="radio" name="educationLevel" value="Sin educación formal" required>
+                                <span>Sin educación formal</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="radio" name="educationLevel" value="Primaria incompleta" required>
+                                <span>Primaria incompleta</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="radio" name="educationLevel" value="Primaria completa" required>
+                                <span>Primaria completa</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="radio" name="educationLevel" value="Secundaria incompleta" required>
+                                <span>Secundaria incompleta</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="radio" name="educationLevel" value="Secundaria completa" required>
+                                <span>Secundaria completa</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="radio" name="educationLevel" value="Técnico/Tecnólogo" required>
+                                <span>Técnico/Tecnólogo</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="radio" name="educationLevel" value="Pregrado incompleto" required>
+                                <span>Pregrado incompleto</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="radio" name="educationLevel" value="Pregrado completo" required>
+                                <span>Pregrado completo</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="radio" name="educationLevel" value="Posgrado incompleto" required>
+                                <span>Posgrado incompleto</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="radio" name="educationLevel" value="Posgrado completo" required>
+                                <span>Posgrado completo</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label for="academicSemester" class="question-label">5. Semestre o año académico actual</label>
+                        <input type="text" id="academicSemester" placeholder="Ej: 3º semestre, 2º año">
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label for="program" class="question-label">5.1 Programa académico</label>
+                        <input type="text" id="program" placeholder="Ej: Medicina, Enfermería, Ingeniería, etc.">
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label required">6. Estrato socioeconómico</label>
+                        <div class="radio-group horizontal">
+                            <label class="radio-option">
+                                <input type="radio" name="socioeconomicStatus" value="1" required>
+                                <span>1</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="socioeconomicStatus" value="2" required>
+                                <span>2</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="socioeconomicStatus" value="3" required>
+                                <span>3</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="socioeconomicStatus" value="4" required>
+                                <span>4</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="socioeconomicStatus" value="5" required>
+                                <span>5</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="socioeconomicStatus" value="6" required>
+                                <span>6</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label required">7. Zona de residencia</label>
+                        <div class="radio-group horizontal">
+                            <label class="radio-option">
+                                <input type="radio" name="residenceZone" value="Urbana" required>
+                                <span>Urbana</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="residenceZone" value="Periurbana" required>
+                                <span>Periurbana</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="residenceZone" value="Rural" required>
+                                <span>Rural</span>
+                            </label>
+                        </div>
+                        <div class="question-hint">Periurbano: Zonas en transición de rural a urbano. Incluyen barrios nuevos, conjuntos residenciales recientes, zonas con servicios básicos.</div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2: PATRONES DE USO -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-number">②</span>
+                        Patrones de Uso de Vapeadores
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label required">8. Estado actual de uso</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="usageStatus" value="Usuario actual (vaporeo actualmente)" required>
+                                <span>Usuario actual (vaporeo actualmente)</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="usageStatus" value="Ex-usuario (he dejado de vapear)" required>
+                                <span>Ex-usuario (he dejado de vapear)</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="usageStatus" value="Experimentador (probé ≤5 veces, no continúo)" required>
+                                <span>Experimentador (probé ≤5 veces, no continúo)</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="usageStatus" value="No he usado nunca" required>
+                                <span>No he usado nunca</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label for="usageStartAge" class="question-label">9. Edad de inicio del uso (si aplica)</label>
+                        <input type="number" id="usageStartAge" min="13" max="120" placeholder="Dejar en blanco si nunca ha usado">
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label required">10. Frecuencia de uso actual o previo</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="usageFrequency" value="Varias veces al día" required>
+                                <span>Varias veces al día</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="usageFrequency" value="Una vez al día" required>
+                                <span>Una vez al día</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="usageFrequency" value="Varios días por semana" required>
+                                <span>Varios días por semana</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="usageFrequency" value="Fines de semana / eventos sociales" required>
+                                <span>Fines de semana / eventos sociales</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="usageFrequency" value="Raramente" required>
+                                <span>Raramente</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label required">11. Contenido de nicotina del dispositivo</label>
+                        <div class="radio-group horizontal">
+                            <label class="radio-option">
+                                <input type="radio" name="nicotineContent" value="Sí, con nicotina" required>
+                                <span>Sí, con nicotina</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="nicotineContent" value="Sin nicotina" required>
+                                <span>Sin nicotina</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="nicotineContent" value="No sé / varía" required>
+                                <span>No sé / varía</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="nicotineContent" value="No aplica" required>
+                                <span>No aplica</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label required">12. ¿Actualmente usted fuma cigarrillos convencionales? (uso dual)</label>
+                        <div class="radio-group horizontal">
+                            <label class="radio-option">
+                                <input type="radio" name="dualUse" value="Sí" required>
+                                <span>Sí</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="dualUse" value="No" required>
+                                <span>No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label required">13. ¿Ha usado vapeadores con cannabis u otras sustancias psicoactivas?</label>
+                        <div class="radio-group horizontal">
+                            <label class="radio-option">
+                                <input type="radio" name="substanceUse" value="Sí" required>
+                                <span>Sí</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="substanceUse" value="No" required>
+                                <span>No</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 3: CONOCIMIENTOS SOBRE VAPEADORES -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-number">③</span>
+                        Conocimientos sobre Vapeadores
+                    </div>
+                    <div class="question-hint" style="margin-bottom: 20px;">Indique su nivel de acuerdo con cada afirmación. 1 = Totalmente en desacuerdo · 5 = Totalmente de acuerdo</div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">14. Los vapeadores no contienen sustancias tóxicas</label>
+                        <div class="likert-scale">
+                            <div class="likert-item">
+                                <input type="radio" name="q14_knowledge_toxins" value="1" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q14_knowledge_toxins" value="2" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q14_knowledge_toxins" value="3" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q14_knowledge_toxins" value="4" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q14_knowledge_toxins" value="5" required>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 5px;">
+                            <div class="likert-label">1. T.Desacuerdo</div>
+                            <div class="likert-label">2. Desacuerdo</div>
+                            <div class="likert-label">3. Neutral</div>
+                            <div class="likert-label">4. Acuerdo</div>
+                            <div class="likert-label">5. T.Acuerdo</div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">15. El vapor del e-cigarrillo puede afectar la salud de quienes lo inhalan de forma pasiva</label>
+                        <div class="likert-scale">
+                            <div class="likert-item">
+                                <input type="radio" name="q15_knowledge_passive" value="1" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q15_knowledge_passive" value="2" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q15_knowledge_passive" value="3" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q15_knowledge_passive" value="4" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q15_knowledge_passive" value="5" required>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 5px;">
+                            <div class="likert-label">1. T.Desacuerdo</div>
+                            <div class="likert-label">2. Desacuerdo</div>
+                            <div class="likert-label">3. Neutral</div>
+                            <div class="likert-label">4. Acuerdo</div>
+                            <div class="likert-label">5. T.Acuerdo</div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">16. La nicotina en los vapeadores genera dependencia igual que en el cigarrillo convencional</label>
+                        <div class="likert-scale">
+                            <div class="likert-item">
+                                <input type="radio" name="q16_knowledge_nicotine_dependence" value="1" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q16_knowledge_nicotine_dependence" value="2" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q16_knowledge_nicotine_dependence" value="3" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q16_knowledge_nicotine_dependence" value="4" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q16_knowledge_nicotine_dependence" value="5" required>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 5px;">
+                            <div class="likert-label">1. T.Desacuerdo</div>
+                            <div class="likert-label">2. Desacuerdo</div>
+                            <div class="likert-label">3. Neutral</div>
+                            <div class="likert-label">4. Acuerdo</div>
+                            <div class="likert-label">5. T.Acuerdo</div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">17. El vapeo puede alterar la microbiota oral y aumentar el riesgo de infecciones bucales</label>
+                        <div class="likert-scale">
+                            <div class="likert-item">
+                                <input type="radio" name="q17_knowledge_oral_microbiota" value="1" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q17_knowledge_oral_microbiota" value="2" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q17_knowledge_oral_microbiota" value="3" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q17_knowledge_oral_microbiota" value="4" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q17_knowledge_oral_microbiota" value="5" required>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 5px;">
+                            <div class="likert-label">1. T.Desacuerdo</div>
+                            <div class="likert-label">2. Desacuerdo</div>
+                            <div class="likert-label">3. Neutral</div>
+                            <div class="likert-label">4. Acuerdo</div>
+                            <div class="likert-label">5. T.Acuerdo</div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">18. Los flavorizantes (sabores) de los líquidos de vapeo pueden ser irritantes pulmonares</label>
+                        <div class="likert-scale">
+                            <div class="likert-item">
+                                <input type="radio" name="q18_knowledge_flavorants" value="1" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q18_knowledge_flavorants" value="2" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q18_knowledge_flavorants" value="3" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q18_knowledge_flavorants" value="4" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q18_knowledge_flavorants" value="5" required>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 5px;">
+                            <div class="likert-label">1. T.Desacuerdo</div>
+                            <div class="likert-label">2. Desacuerdo</div>
+                            <div class="likert-label">3. Neutral</div>
+                            <div class="likert-label">4. Acuerdo</div>
+                            <div class="likert-label">5. T.Acuerdo</div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">19. El daño pulmonar asociado a vapeadores es una condición médica reconocida</label>
+                        <div class="likert-scale">
+                            <div class="likert-item">
+                                <input type="radio" name="q19_knowledge_lung_damage" value="1" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q19_knowledge_lung_damage" value="2" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q19_knowledge_lung_damage" value="3" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q19_knowledge_lung_damage" value="4" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q19_knowledge_lung_damage" value="5" required>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 5px;">
+                            <div class="likert-label">1. T.Desacuerdo</div>
+                            <div class="likert-label">2. Desacuerdo</div>
+                            <div class="likert-label">3. Neutral</div>
+                            <div class="likert-label">4. Acuerdo</div>
+                            <div class="likert-label">5. T.Acuerdo</div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">20. Los menores de edad no pueden adquirir vapeadores legalmente en Colombia</label>
+                        <div class="likert-scale">
+                            <div class="likert-item">
+                                <input type="radio" name="q20_knowledge_legal_minors" value="1" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q20_knowledge_legal_minors" value="2" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q20_knowledge_legal_minors" value="3" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q20_knowledge_legal_minors" value="4" required>
+                            </div>
+                            <div class="likert-item">
+                                <input type="radio" name="q20_knowledge_legal_minors" value="5" required>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 5px;">
+                            <div class="likert-label">1. T.Desacuerdo</div>
+                            <div class="likert-label">2. Desacuerdo</div>
+                            <div class="likert-label">3. Neutral</div>
+                            <div class="likert-label">4. Acuerdo</div>
+                            <div class="likert-label">5. T.Acuerdo</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 4: INFLUENCIA SOCIAL -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-number">④</span>
+                        Influencia Social
+                    </div>
+                    <div class="question-hint" style="margin-bottom: 20px;">1 = Totalmente en desacuerdo · 5 = Totalmente de acuerdo</div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">21. La mayoría de mis amigos(as) cercanos(as) usan o han usado vapeadores</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q21_social_peers" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q21_social_peers" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q21_social_peers" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q21_social_peers" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q21_social_peers" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">22. En reuniones sociales me siento presionado(a) a vapear para encajar</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q22_social_pressure" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q22_social_pressure" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q22_social_pressure" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q22_social_pressure" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q22_social_pressure" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">23. Las personas importantes para mí (familia, pareja) aprueban o normalizan el vapeo</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q23_social_family_approval" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q23_social_family_approval" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q23_social_family_approval" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q23_social_family_approval" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q23_social_family_approval" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">24. Ver a influencers o artistas utilizando vapeadores me resulta atractivo(a)</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q24_social_influencers" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q24_social_influencers" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q24_social_influencers" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q24_social_influencers" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q24_social_influencers" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">25. El ambiente universitario facilita el acceso o la exposición a vapeadores</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q25_social_university_environment" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q25_social_university_environment" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q25_social_university_environment" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q25_social_university_environment" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q25_social_university_environment" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">26. Me resulta difícil rechazar un vapeador cuando me lo ofrecen en un contexto social</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q26_social_refuse" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q26_social_refuse" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q26_social_refuse" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q26_social_refuse" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q26_social_refuse" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">27. Vapear es percibido como algo «cool» o moderno en mi círculo</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q27_social_cool" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q27_social_cool" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q27_social_cool" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q27_social_cool" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q27_social_cool" value="5" required></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 5: PERCEPCIÓN DE RIESGO Y DAÑO -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-number">⑤</span>
+                        Percepción de Riesgo y Daño
+                    </div>
+                    <div class="question-hint" style="margin-bottom: 20px;">¿Qué tanto riesgo percibe en las siguientes situaciones? 1 = Ningún riesgo · 5 = Riesgo muy alto</div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">28. Vapear ocasionalmente (1–2 veces por semana)</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q28_risk_occasional" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q28_risk_occasional" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q28_risk_occasional" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q28_risk_occasional" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q28_risk_occasional" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">29. Vapear diariamente durante más de un año</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q29_risk_daily" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q29_risk_daily" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q29_risk_daily" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q29_risk_daily" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q29_risk_daily" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">30. Usar vapeadores con alta concentración de nicotina (≥20 mg/mL)</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q30_risk_high_nicotine" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q30_risk_high_nicotine" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q30_risk_high_nicotine" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q30_risk_high_nicotine" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q30_risk_high_nicotine" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">31. Usar vapeadores con cannabis u otras drogas</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q31_risk_substances" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q31_risk_substances" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q31_risk_substances" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q31_risk_substances" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q31_risk_substances" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">32. Compartir el dispositivo con otras personas (riesgo microbiológico)</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q32_risk_sharing" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q32_risk_sharing" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q32_risk_sharing" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q32_risk_sharing" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q32_risk_sharing" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">33. Usar dispositivos de procedencia no regulada o desconocida</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q33_risk_unregulated" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q33_risk_unregulated" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q33_risk_unregulated" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q33_risk_unregulated" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q33_risk_unregulated" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">34. Inhalar vapor de segunda mano (vapeo pasivo)</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q34_risk_secondhand" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q34_risk_secondhand" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q34_risk_secondhand" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q34_risk_secondhand" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q34_risk_secondhand" value="5" required></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 6: PLACER PERCIBIDO Y EXPECTATIVAS -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-number">⑥</span>
+                        Placer Percibido y Expectativas de Uso
+                    </div>
+                    <div class="question-hint" style="margin-bottom: 20px;">¿En qué medida espera o experimenta lo siguiente al vapear? 1 = Nada · 5 = Mucho</div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">35. Vapear me produce placer sensorial (sabor, sensación de inhalación)</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q35_pleasure_sensory" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q35_pleasure_sensory" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q35_pleasure_sensory" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q35_pleasure_sensory" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q35_pleasure_sensory" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">36. Espero que vapear me ayude a reducir el estrés o la ansiedad</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q36_pleasure_stress_reduction" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q36_pleasure_stress_reduction" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q36_pleasure_stress_reduction" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q36_pleasure_stress_reduction" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q36_pleasure_stress_reduction" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">37. Creo que vapear mejora mi estado de ánimo o me relaja</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q37_pleasure_mood" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q37_pleasure_mood" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q37_pleasure_mood" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q37_pleasure_mood" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q37_pleasure_mood" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">38. Vapear me parece una forma de expresión personal o identidad</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q38_pleasure_identity" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q38_pleasure_identity" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q38_pleasure_identity" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q38_pleasure_identity" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q38_pleasure_identity" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">39. Vapear me ayuda a socializar o conectarme con otros</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q39_pleasure_social" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q39_pleasure_social" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q39_pleasure_social" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q39_pleasure_social" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q39_pleasure_social" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">40. Espero que vapear sea una alternativa más segura que fumar cigarrillos</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q40_pleasure_safer_alternative" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q40_pleasure_safer_alternative" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q40_pleasure_safer_alternative" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q40_pleasure_safer_alternative" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q40_pleasure_safer_alternative" value="5" required></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 7: BIENESTAR EMOCIONAL -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-number">⑦</span>
+                        Bienestar Emocional
+                    </div>
+                    <div class="question-hint" style="margin-bottom: 20px;">Durante las últimas 2 semanas, ¿con qué frecuencia le han molestado los siguientes problemas? 0 = Nunca · 1 = Varios días · 2 = Más de la mitad de los días · 3 = Casi todos los días</div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">41. Poco interés o placer en hacer cosas</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q41_wellbeing_interest" value="0" required></div>
+                            <div class="likert-item"><input type="radio" name="q41_wellbeing_interest" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q41_wellbeing_interest" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q41_wellbeing_interest" value="3" required></div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 5px;">
+                            <div class="likert-label">0. Nunca</div>
+                            <div class="likert-label">1. Varios días</div>
+                            <div class="likert-label">2. Más de la mitad</div>
+                            <div class="likert-label">3. Casi todos</div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">42. Sentirse decaído(a), deprimido(a) o sin esperanza</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q42_wellbeing_depression" value="0" required></div>
+                            <div class="likert-item"><input type="radio" name="q42_wellbeing_depression" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q42_wellbeing_depression" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q42_wellbeing_depression" value="3" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">43. Poca energía o sentirse cansado(a) con frecuencia</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q43_wellbeing_energy" value="0" required></div>
+                            <div class="likert-item"><input type="radio" name="q43_wellbeing_energy" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q43_wellbeing_energy" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q43_wellbeing_energy" value="3" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">44. Sentirse mal consigo mismo(a) o sentirse un fracasado(a)</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q44_wellbeing_selfworth" value="0" required></div>
+                            <div class="likert-item"><input type="radio" name="q44_wellbeing_selfworth" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q44_wellbeing_selfworth" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q44_wellbeing_selfworth" value="3" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">45. Sentirse nervioso(a), ansioso(a) o muy alterado(a)</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q45_wellbeing_anxiety" value="0" required></div>
+                            <div class="likert-item"><input type="radio" name="q45_wellbeing_anxiety" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q45_wellbeing_anxiety" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q45_wellbeing_anxiety" value="3" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">46. No poder dejar de preocuparse o no poder controlar la preocupación</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q46_wellbeing_worry" value="0" required></div>
+                            <div class="likert-item"><input type="radio" name="q46_wellbeing_worry" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q46_wellbeing_worry" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q46_wellbeing_worry" value="3" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">47. Dificultad para relajarse</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q47_wellbeing_relax" value="0" required></div>
+                            <div class="likert-item"><input type="radio" name="q47_wellbeing_relax" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q47_wellbeing_relax" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q47_wellbeing_relax" value="3" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">48. Preocuparse demasiado por cosas diferentes</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q48_wellbeing_multiple_worries" value="0" required></div>
+                            <div class="likert-item"><input type="radio" name="q48_wellbeing_multiple_worries" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q48_wellbeing_multiple_worries" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q48_wellbeing_multiple_worries" value="3" required></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 8: DEPENDENCIA AL VAPEADOR -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-number">⑧</span>
+                        Dependencia al Vapeador
+                    </div>
+                    <div class="question-hint" style="margin-bottom: 20px;">Solo para usuarios actuales o ex-usuarios. 1 = Nunca · 5 = Siempre</div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">49. Siento un deseo intenso o urgente de vapear</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q49_dependence_craving" value="1"></div>
+                            <div class="likert-item"><input type="radio" name="q49_dependence_craving" value="2"></div>
+                            <div class="likert-item"><input type="radio" name="q49_dependence_craving" value="3"></div>
+                            <div class="likert-item"><input type="radio" name="q49_dependence_craving" value="4"></div>
+                            <div class="likert-item"><input type="radio" name="q49_dependence_craving" value="5"></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">50. Me resulta difícil resistir el impulso de vapear cuando tengo el dispositivo cerca</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q50_dependence_resist" value="1"></div>
+                            <div class="likert-item"><input type="radio" name="q50_dependence_resist" value="2"></div>
+                            <div class="likert-item"><input type="radio" name="q50_dependence_resist" value="3"></div>
+                            <div class="likert-item"><input type="radio" name="q50_dependence_resist" value="4"></div>
+                            <div class="likert-item"><input type="radio" name="q50_dependence_resist" value="5"></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">51. Cuando no puedo vapear me siento irritable, ansioso(a) o intranquilo(a)</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q51_dependence_withdrawal" value="1"></div>
+                            <div class="likert-item"><input type="radio" name="q51_dependence_withdrawal" value="2"></div>
+                            <div class="likert-item"><input type="radio" name="q51_dependence_withdrawal" value="3"></div>
+                            <div class="likert-item"><input type="radio" name="q51_dependence_withdrawal" value="4"></div>
+                            <div class="likert-item"><input type="radio" name="q51_dependence_withdrawal" value="5"></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">52. He intentado reducir o dejar de vapear sin lograrlo</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q52_dependence_failed_attempt" value="1"></div>
+                            <div class="likert-item"><input type="radio" name="q52_dependence_failed_attempt" value="2"></div>
+                            <div class="likert-item"><input type="radio" name="q52_dependence_failed_attempt" value="3"></div>
+                            <div class="likert-item"><input type="radio" name="q52_dependence_failed_attempt" value="4"></div>
+                            <div class="likert-item"><input type="radio" name="q52_dependence_failed_attempt" value="5"></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">53. La frecuencia o intensidad de mi uso ha aumentado con el tiempo</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q53_dependence_escalation" value="1"></div>
+                            <div class="likert-item"><input type="radio" name="q53_dependence_escalation" value="2"></div>
+                            <div class="likert-item"><input type="radio" name="q53_dependence_escalation" value="3"></div>
+                            <div class="likert-item"><input type="radio" name="q53_dependence_escalation" value="4"></div>
+                            <div class="likert-item"><input type="radio" name="q53_dependence_escalation" value="5"></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">54. Continúo vapeando a pesar de saber que puede afectar mi salud</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q54_dependence_continue_despite_health" value="1"></div>
+                            <div class="likert-item"><input type="radio" name="q54_dependence_continue_despite_health" value="2"></div>
+                            <div class="likert-item"><input type="radio" name="q54_dependence_continue_despite_health" value="3"></div>
+                            <div class="likert-item"><input type="radio" name="q54_dependence_continue_despite_health" value="4"></div>
+                            <div class="likert-item"><input type="radio" name="q54_dependence_continue_despite_health" value="5"></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">55. El uso de vapeadores ha interferido con mis actividades académicas, laborales o sociales</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q55_dependence_interference" value="1"></div>
+                            <div class="likert-item"><input type="radio" name="q55_dependence_interference" value="2"></div>
+                            <div class="likert-item"><input type="radio" name="q55_dependence_interference" value="3"></div>
+                            <div class="likert-item"><input type="radio" name="q55_dependence_interference" value="4"></div>
+                            <div class="likert-item"><input type="radio" name="q55_dependence_interference" value="5"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 9: AUTOEFICACIA Y ACTITUDES HACIA EL CAMBIO -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-number">⑨</span>
+                        Autoeficacia y Actitudes hacia el Cambio
+                    </div>
+                    <div class="question-hint" style="margin-bottom: 20px;">1 = Totalmente en desacuerdo · 5 = Totalmente de acuerdo</div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">56. Soy capaz de rechazar un vapeador incluso cuando personas cercanas me presionan</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q56_efficacy_refuse_pressure" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q56_efficacy_refuse_pressure" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q56_efficacy_refuse_pressure" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q56_efficacy_refuse_pressure" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q56_efficacy_refuse_pressure" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">57. Si me lo propusiera, podría reducir o dejar de vapear sin ayuda profesional</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q57_efficacy_quit_alone" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q57_efficacy_quit_alone" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q57_efficacy_quit_alone" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q57_efficacy_quit_alone" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q57_efficacy_quit_alone" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">58. Conozco estrategias alternativas y saludables para manejar el estrés</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q58_efficacy_healthy_strategies" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q58_efficacy_healthy_strategies" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q58_efficacy_healthy_strategies" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q58_efficacy_healthy_strategies" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q58_efficacy_healthy_strategies" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">59. Buscaría orientación profesional si quisiera dejar de vapear</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q59_efficacy_seek_help" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q59_efficacy_seek_help" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q59_efficacy_seek_help" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q59_efficacy_seek_help" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q59_efficacy_seek_help" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">60. Me considero capaz de tomar decisiones informadas sobre mi salud</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q60_efficacy_informed_decisions" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q60_efficacy_informed_decisions" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q60_efficacy_informed_decisions" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q60_efficacy_informed_decisions" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q60_efficacy_informed_decisions" value="5" required></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 10: INDICADORES DE SALUD ORAL Y RESPIRATORIA -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-number">⑩</span>
+                        Indicadores de Salud Oral y Respiratoria
+                    </div>
+                    <div class="question-hint" style="margin-bottom: 20px;">1 = Nunca · 5 = Siempre</div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">61. Ha tenido sangrado de encías al cepillarte o sin razón aparente</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q61_health_gum_bleeding" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q61_health_gum_bleeding" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q61_health_gum_bleeding" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q61_health_gum_bleeding" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q61_health_gum_bleeding" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">62. Sus encías se ven inflamadas (hinchadas), enrojecidas o le duelen</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q62_health_gum_inflammation" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q62_health_gum_inflammation" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q62_health_gum_inflammation" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q62_health_gum_inflammation" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q62_health_gum_inflammation" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">63. Ha notado mal aliento persistente que no desaparece con el cepillado</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q63_health_bad_breath" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q63_health_bad_breath" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q63_health_bad_breath" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q63_health_bad_breath" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q63_health_bad_breath" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">64. Sufre de sequedad de boca o sensación de ardor/quemazón en boca o lengua</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q64_health_dry_mouth" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q64_health_dry_mouth" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q64_health_dry_mouth" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q64_health_dry_mouth" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q64_health_dry_mouth" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">65. Ha tenido caries nuevas en el último año o mayor sensibilidad en los dientes</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q65_health_cavities" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q65_health_cavities" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q65_health_cavities" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q65_health_cavities" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q65_health_cavities" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">66. Tiene tos que dura más de 2 semanas (crónica) o que produce flemas</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q66_health_chronic_cough" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q66_health_chronic_cough" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q66_health_chronic_cough" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q66_health_chronic_cough" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q66_health_chronic_cough" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">67. Tiene dificultad para respirar (falta de aire) o siente presión/opresión en el pecho</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q67_health_breathing_difficulty" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q67_health_breathing_difficulty" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q67_health_breathing_difficulty" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q67_health_breathing_difficulty" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q67_health_breathing_difficulty" value="5" required></div>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label">68. Tiene infecciones respiratorias frecuentes (dolor de garganta, gripa, bronquitis, sinusitis)</label>
+                        <div class="likert-scale">
+                            <div class="likert-item"><input type="radio" name="q68_health_respiratory_infections" value="1" required></div>
+                            <div class="likert-item"><input type="radio" name="q68_health_respiratory_infections" value="2" required></div>
+                            <div class="likert-item"><input type="radio" name="q68_health_respiratory_infections" value="3" required></div>
+                            <div class="likert-item"><input type="radio" name="q68_health_respiratory_infections" value="4" required></div>
+                            <div class="likert-item"><input type="radio" name="q68_health_respiratory_infections" value="5" required></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 11: CONTEXTO DE SALUD ORAL E HIGIENE -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-number">⑪</span>
+                        Contexto de Salud Oral e Higiene
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label required">69. Frecuencia de cepillado dental diario</label>
+                        <div class="radio-group horizontal">
+                            <label class="radio-option">
+                                <input type="radio" name="q69_brushing_frequency" value="1 vez al día" required>
+                                <span>1 vez al día</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="q69_brushing_frequency" value="2 veces al día" required>
+                                <span>2 veces al día</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="q69_brushing_frequency" value="3 o más veces" required>
+                                <span>3 o más veces</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="q69_brushing_frequency" value="No todos los días" required>
+                                <span>No todos los días</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label required">70. Última visita al odontólogo</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="q70_dental_visit" value="Hace < 6 meses" required>
+                                <span>Hace < 6 meses</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="q70_dental_visit" value="6–12 meses" required>
+                                <span>6–12 meses</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="q70_dental_visit" value="1–2 años" required>
+                                <span>1–2 años</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="q70_dental_visit" value="Más de 2 años" required>
+                                <span>Más de 2 años</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="q70_dental_visit" value="Nunca" required>
+                                <span>Nunca</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label required">71. ¿Comparte el vapeador con otras personas?</label>
+                        <div class="radio-group horizontal">
+                            <label class="radio-option">
+                                <input type="radio" name="q71_device_sharing" value="Siempre" required>
+                                <span>Siempre</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="q71_device_sharing" value="Frecuentemente" required>
+                                <span>Frecuentemente</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="q71_device_sharing" value="A veces" required>
+                                <span>A veces</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="q71_device_sharing" value="Nunca" required>
+                                <span>Nunca</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-group form-group">
+                        <label class="question-label required">72. ¿Recibió antibióticos en los últimos 3 meses?</label>
+                        <div class="radio-group horizontal">
+                            <label class="radio-option">
+                                <input type="radio" name="q72_antibiotics" value="Sí" required>
+                                <span>Sí</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="q72_antibiotics" value="No" required>
+                                <span>No</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="q72_antibiotics" value="No recuerdo" required>
+                                <span>No recuerdo</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTONES DE ENVÍO -->
+                <div class="button-group">
+                    <button type="submit" class="btn-submit">ENVIAR RESPUESTAS</button>
+                    <button type="reset" class="btn-reset">LIMPIAR FORMULARIO</button>
+                </div>
+
+                <div class="loading" id="loadingIndicator">
+                    <span class="spinner"></span>
+                    Guardando respuestas...
+                </div>
+
+                <button type="button" class="btn-admin" onclick="redirectToAdmin()">Acceso de Administrador</button>
+            </form>
+        </div>
+
+        <div class="footer">
+            <p>Minciencias - Convocatoria 933-2023 | Código 100890 | Versión 2.0 | Uso exclusivo para investigación con aprobación ética</p>
+            <p>Grupo de Investigaciones Microbiológicas y Biomédicas de Córdoba (GIMBI-C) | Universidad de Córdoba</p>
+        </div>
+    </div>
+
+    <script>
+        // Generar ID único para cada encuesta
+        function generateSurveyId() {
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+            return `FPSM-VAP-${timestamp}-${random}`;
+        }
+
+        // Inicializar el formulario
+        document.addEventListener('DOMContentLoaded', function() {
+            // Establecer fecha actual
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('surveyDate').value = today;
+            
+            // Establecer hora actual
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('surveyTime').value = `${hours}:${minutes}`;
+            
+            // Generar ID de encuesta
+            document.getElementById('surveyId').value = generateSurveyId();
+        });
+
+        // Manejar envío del formulario
+        document.getElementById('mainForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Validar consentimiento
+            if (!document.getElementById('consentCheck').checked) {
+                showError('Debe aceptar el consentimiento informado para continuar.');
+                return;
+            }
+
+            // Mostrar indicador de carga
+            document.getElementById('loadingIndicator').style.display = 'block';
+
+            try {
+                // Recopilar datos del formulario
+                const formData = new FormData(this);
+                const data = {
+                    surveyId: document.getElementById('surveyId').value,
+                    surveyDate: document.getElementById('surveyDate').value,
+                    surveyTime: document.getElementById('surveyTime').value,
+                    timestamp: new Date().toISOString(),
+                    responses: Object.fromEntries(formData)
+                };
+
+                // Enviar datos a Netlify Functions
+                const response = await fetch('/.netlify/functions/submit-form', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showSuccess();
+                    // Limpiar formulario
+                    document.getElementById('mainForm').reset();
+                    // Regenerar ID
+                    document.getElementById('surveyId').value = generateSurveyId();
+                    // Restaurar fecha y hora
+                    const today = new Date().toISOString().split('T')[0];
+                    document.getElementById('surveyDate').value = today;
+                    const now = new Date();
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    document.getElementById('surveyTime').value = `${hours}:${minutes}`;
+                    // Scroll al mensaje de éxito
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    showError(result.message || 'Error al guardar la respuesta. Intente nuevamente.');
+                }
+            } catch (error) {
+                showError('Error de conexión: ' + error.message);
+            } finally {
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }
+        });
+
+        function showSuccess() {
+            const successMsg = document.getElementById('successMessage');
+            successMsg.style.display = 'block';
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 6000);
+        }
+
+        function showError(message) {
+            const errorMsg = document.getElementById('errorMessage');
+            errorMsg.textContent = message;
+            errorMsg.style.display = 'block';
+        }
+
+        function redirectToAdmin() {
+            window.location.href = '/admin.html';
+        }
+    </script>
+</body>
+</html>
